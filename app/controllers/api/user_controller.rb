@@ -1,6 +1,5 @@
 class Api::UserController < Api::BaseController
   require 'uuid'
-  require 'jwt'
   require 'openssl'
   require 'base64'
 
@@ -32,10 +31,6 @@ class Api::UserController < Api::BaseController
     hash = OpenSSL::HMAC.digest('sha256', ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'], params[:password1])
     hashed_password = Base64.encode64(hash)
 
-    #TOKEN
-    # generate token
-    token = JWT.encode({ user_id: user_id }, ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'])
-
     # DATE TIME
     # get current date time
     current_date = Date.current
@@ -46,7 +41,6 @@ class Api::UserController < Api::BaseController
       :email => params[:email],
       :user_id => user_id,
       :password => hashed_password,
-      :current_token => token,
       :current_sign_in_at => current_date,
       :last_sign_in_at => current_date
     }
@@ -55,7 +49,7 @@ class Api::UserController < Api::BaseController
 
     if (@user.save)
       # create response
-      render json: { :token => token }
+      render json: { :token => user.token }
     else
       render json: { :message => 'unable to save user'}
     end
