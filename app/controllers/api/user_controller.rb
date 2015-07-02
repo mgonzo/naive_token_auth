@@ -49,7 +49,7 @@ class Api::UserController < Api::BaseController
 
     if (@user.save)
       # create response
-      render json: { :token => user.token }
+      render json: { :token => @user.current_token }
     else
       render json: { :message => 'unable to save user'}
     end
