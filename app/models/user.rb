@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   require 'base64'
   require 'jwt'
 
+  validates_uniqueness_of :name
+
   before_create :set_uuid
   before_create :set_password
 
@@ -32,6 +34,17 @@ class User < ActiveRecord::Base
     # create a user_id uuid
     uuid = UUID.new 
     self.user_id = uuid.generate :compact
+  end
+
+  # TOKEN SWAP
+  def token_swap
+    # change last token
+    self.last_token = self.current_token
+
+    # generate new token
+    # set it to current token
+    self.set_token
+    self.save
   end
 
   #

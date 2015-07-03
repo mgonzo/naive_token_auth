@@ -6,19 +6,16 @@ class Api::UserController < Api::BaseController
   end
 
   def create
-    # does user exist already?
-    # if yes, send user to sign in
-    # else create user
-
     # sanitize everything
     # is everything present?
     # is email good?
-    # do passwords match?
     name = params[:name]
     email = params[:email]
+
+    # do passwords match?
     password = params[:password1]
-    
-    # save user
+
+    # else create user
     safe_params = {
       :name => params[:name],
       :email => params[:email],
@@ -28,11 +25,12 @@ class Api::UserController < Api::BaseController
     # create user
     @user = User.new(safe_params);
 
+    # save user
     # create response
     if (@user.save)
       render json: { :token => @user.current_token }
     else
-      render json: { :message => 'unable to save user'}
+      render json: { :message => 'Unable to create user.'}
     end
 
     # if anything fails, send back crap
@@ -68,13 +66,21 @@ class Api::UserController < Api::BaseController
     # match internal id on either name/password or email/password
     case @user_by_password.id
     when @user_by_name.id
+      # token swap
+      @user_by_name.token_swap
+      # send token to user
       render json: {
+        :token => @user_by_name.current_token,
         :message => 'matched user by name',
         :user_by_name => @user_by_name.user_id
       }
       return
     when @user_by_email.id
+      # token swap
+      @user_by_name.token_swap
+      # send token to user
       render json: {
+        :token => @user_by_name.current_token,
         :message => 'matched user by email',
         :user_by_email => @user_by_email.user_id
       }
@@ -84,10 +90,6 @@ class Api::UserController < Api::BaseController
       return
     end
 
-    # generate new token
-    # set it to current token
-    # empty last token
-    # send token to user
 
     # if there is no user for any of these
     # or if nothing matches up
