@@ -3,14 +3,14 @@ class User < ActiveRecord::Base
   require 'base64'
   require 'jwt'
 
-  before_create :generate_uuid
-  before_create :generate_password
+  before_create :set_uuid
+  before_create :set_password
 
-  before_save :generate_token
+  before_save :set_token
   before_save :set_datetime
 
   # SET NEW TOKEN
-  def generate_token
+  def set_token
     self.current_token = JWT.encode({ user_id: self.user_id }, ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'])
   end
 
@@ -23,16 +23,22 @@ class User < ActiveRecord::Base
   end
 
   # CREATE PASSWORD
-  def generate_password
-    hash = OpenSSL::HMAC.digest('sha256', ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'], self.password)
-    self.password = Base64.encode64(hash)
+  def set_password
+    self.password = self.class.generate_password(self.password)
   end
 
   # CREATE UUID
-  def generate_uuid
+  def set_uuid
     # create a user_id uuid
     uuid = UUID.new 
     self.user_id = uuid.generate :compact
+  end
+
+  #
+  # CLASS METHODS
+  #
+  def self.generate_password(password)
+    Base64.encode64(OpenSSL::HMAC.digest('sha256', ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'], password))
   end
 
 end
