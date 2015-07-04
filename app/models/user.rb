@@ -1,57 +1,73 @@
 class User < ActiveRecord::Base
-  require 'openssl'
-  require 'base64'
-  require 'jwt'
+  include Tokenize
 
   validates_uniqueness_of :name
 
   before_create :set_uuid
   before_create :set_password
-
-  before_save :set_token
-  before_save :set_datetime
+  before_create :set_token
 
   # SET NEW TOKEN
   def set_token
-    self.current_token = JWT.encode({ user_id: self.user_id }, ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'])
+    self.current_token = self.class.token_generate(self.user_id)
   end
 
   # SET DATE TIME
   def set_datetime
-    # get current date time
-    current_date = Date.current
-    self.current_sign_in_at = current_date
-    self.last_sign_in_at = current_date
+    self.last_sign_in_at = self.current_sign_in_at
+    self.current_sign_in_at = Date.current
   end
 
   # CREATE PASSWORD
   def set_password
-    self.password = self.class.generate_password(self.password)
+    self.password = self.class.password_generate(self.password)
   end
 
   # CREATE UUID
   def set_uuid
-    # create a user_id uuid
-    uuid = UUID.new 
-    self.user_id = uuid.generate :compact
+    self.user_id = self.class.uuid_generate
   end
 
-  # TOKEN SWAP
-  def token_swap
-    # change last token
-    self.last_token = self.current_token
-
-    # generate new token
-    # set it to current token
-    self.set_token
+  # instance signin
+  def signin
+    # just passing the user instance right in
+    self.class.token_swap(self)
+    self.set_datetime
     self.save
+    return self
   end
 
-  #
-  # CLASS METHODS
-  #
-  def self.generate_password(password)
-    Base64.encode64(OpenSSL::HMAC.digest('sha256', ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'], password))
+  # is a class function
+  # probably belongs in the mixin
+  def self.signin (name_or_email, password)
+    # if password is nil give up
+    # passwd hash
+    hashed_password = self.password_generate(password)
+
+    # find a user by name, email and by password
+    @user_by_password = self.find_by password: hashed_password
+    if (!@user_by_password)
+      return nil
+    end
+
+    @user_by_name = self.find_by name: name_or_email
+    @user_by_email = self.find_by name: name_or_email
+    if (!@user_by_name && !@user_by_email)
+      return nil
+    end
+
+    # did all of these return a User?
+    # match internal id on either name/password or email/password
+    case @user_by_password.id
+    when @user_by_name.id
+      return @user_by_name.signin
+
+    when @user_by_email.id
+      return @user_by_email.signin
+
+    else
+      return nil
+    end
   end
 
 end
