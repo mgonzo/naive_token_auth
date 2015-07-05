@@ -3,29 +3,16 @@ class User < ActiveRecord::Base
 
   validates_uniqueness_of :name
 
-  before_create :set_uuid
-  before_create :set_password
-  before_create :set_token
+  before_create :setup_auth
 
-  # SET NEW TOKEN
-  def set_token
-    self.current_token = self.class.token_generate(self.user_id)
+  def setup_auth
+    self.class.create_user(self)
   end
 
   # SET DATE TIME
   def set_datetime
     self.last_sign_in_at = self.current_sign_in_at
     self.current_sign_in_at = Date.current
-  end
-
-  # CREATE PASSWORD
-  def set_password
-    self.password = self.class.password_generate(self.password)
-  end
-
-  # CREATE UUID
-  def set_uuid
-    self.user_id = self.class.uuid_generate
   end
 
   # instance signin

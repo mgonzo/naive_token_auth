@@ -41,6 +41,8 @@ class Api::UserController < Api::BaseController
 
   end
 
+  # using a name/password combination
+  # to get a fresh token
   def signin
     # lookup user by name or email
     # if there is no user send error 
@@ -56,6 +58,11 @@ class Api::UserController < Api::BaseController
       return
     end
 
+    # probably change this
+    # to something more portable
+    # like 'render @user.json'
+    # or return @user.token
+    # which can return the json token
     render json: {
       :user => @user,
       :token => @user.current_token
