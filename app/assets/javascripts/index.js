@@ -35,16 +35,32 @@ $(function () {
     },
     postSigninUser: function () {
       console.log('post signin ...');
+      var user = {
+        'name': $('#auth .signin-user .name').val(),
+        'password': $('#auth .signin-user .password').val()
+      };
+
+      $.ajax({
+        url: '/api/v1/user/signin',
+        type: 'POST',
+        data: user
+      })
+        .done(self.api.signinUserSuccess)
+        .fail(self.api.signinUserFail);
     },
     createUserSuccess: function (data, status, jqxhr) {
       console.log('create success ...');
-      // get the token and store it
       self.token.store(data.token);
     },
     createUserFail: function (jqxhr, status, err) {
       console.log('create fail ...');
     },
     signinUserSuccess: function () {
+      console.log('signin success ...');
+      self.token.store(data.token);
+    },
+    signinUserFail: function () {
+      console.log('signin fail ...');
     }
   };
 

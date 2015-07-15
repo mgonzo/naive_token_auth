@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       scope :user do
         get '/' => 'user#index'
         post '/' => 'user#create'
+        post '/signin' => 'user#signin'
       end
 
     end

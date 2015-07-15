@@ -1,74 +1,73 @@
 class Api::UserController < Api::BaseController
-  require 'uuid'
-  require 'jwt'
-  require 'openssl'
-  require 'base64'
 
   def index
     render json: { :msg => 'hello index' }
   end
 
   def create
-    name = params[:name]
-    email = params[:email]
-    password1 = params[:password1]
-    password2 = params[:password2]
-
-    # sanitize everything
-    # is everything present?
-    # is email good?
-    # do passwords match?
-    
-    # does user exist already?
-    # if yes, just sign user in
-    # else create user
-
-    # USER
-    # create a user_id uuid
-    uuid = UUID.new 
-    user_id = uuid.generate :compact
-
-    # get hashed password
-    hash = OpenSSL::HMAC.digest('sha256', ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'], params[:password1])
-    hashed_password = Base64.encode64(hash)
-
-    #TOKEN
-    # generate token
-    token = JWT.encode({ user_id: user_id }, ENV['SIMPLE_TOKEN_AUTH_KEY_BASE'])
-
-    # DATE TIME
-    # get current date time
-    current_date = Date.current
-
-    # save user
-    safe_params = {
-      :name => params[:name],
-      :email => params[:email],
-      :user_id => user_id,
-      :password => hashed_password,
-      :current_token => token,
-      :current_sign_in_at => current_date,
-      :last_sign_in_at => current_date
-    }
-
-    @user = User.new(safe_params);
-
-    if (@user.save)
-      # create response
-      render json: { :token => token }
-    else
-      render json: { :message => 'unable to save user'}
-    end
-
-
-
     # if anything fails, send back crap
     # http code and whatever else
     # redirect to index or error page
+    
+    # sanitize everything
+    # is everything present?
+    # is email good?
+    name = params[:name]
+    email = params[:email]
+
+    # do passwords match?
+    password = params[:password1]
+
+    # else create user
+    safe_params = {
+      :name => params[:name],
+      :email => params[:email],
+      :password => password,
+    }
+
+    # create user
+    @user = User.new(safe_params);
+
+    # save user
+    # create response
+    if (@user.save)
+      render json: { :token => @user.current_token }
+    else
+      render json: { 
+        :error => 'Unable to create user.',
+      }, status: 500
+      return
+    end
+
   end
 
-  private 
-    def user_params
+  # using a name/password combination
+  # to get a fresh token
+  def signin
+    # lookup user by name or email
+    # if there is no user send error 
+    name_or_email = params[:name]
+    password = params[:password]
+
+    @user = User.signin(name_or_email, password)
+
+    if (!@user)
+      render json: { 
+        :error => 'Failed to sign in.',
+      }, status: 500
+      return
     end
+
+    # probably change this
+    # to something more portable
+    # like 'render @user.json'
+    # or return @user.token
+    # which can return the json token
+    render json: {
+      :user => @user,
+      :token => @user.current_token
+    }
+
+  end
 
 end
