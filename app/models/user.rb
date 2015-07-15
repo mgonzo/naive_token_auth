@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   before_create :setup_auth
 
   #
-  # setup_auth
+  # Create new user
   #
   # call module create_user
   # to setup password, user_id, tokens
@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   end
 
   #
-  # User.signin
+  # User signin
   #
   # find a user and
   # try to signin the user
