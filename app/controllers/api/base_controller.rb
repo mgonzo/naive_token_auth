@@ -23,18 +23,34 @@ class Api::BaseController < ApplicationController
       return 
     end
 
-    @user = self.find_by current_token: @token
-
-    if (!@user)
-      @user = self.find_by last_token: @token
+    @user = nil;
+    Users.each do |u|
+      if (self.constant_compare(u.current_token, @token))
+        @user = u;
+      elseif (self.constant_compare(u.last_token, @token))
+        @user = u;
+      end
     end
 
-    if (!@user)
-      return nil
-    end
-
-    return true
+    # if (!@user) # redirect to login end
 
   end
+
+  def constant_compare(a, b)
+    #return false
+    ############
+    
+    if (a.length != b.length)
+      return false
+    end
+
+    @results = 0
+    a.zip(b) { |x, y|
+      @return |= x ^ y
+    }
+
+    @results == 0
+  end
+
 
 end
