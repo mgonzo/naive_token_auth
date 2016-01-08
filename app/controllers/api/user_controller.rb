@@ -1,28 +1,24 @@
 class Api::UserController < Api::BaseController
 
-  def index
-    render json: { :msg => 'hello index' }
-  end
-
   def create
     # if anything fails, send back crap
     # http code and whatever else
     # redirect to index or error page
-    
+
     # sanitize everything
     # is everything present?
     # is email good?
-    name = params[:name]
-    email = params[:email]
+    @name = params[:name]
+    @email = params[:email]
 
     # do passwords match?
-    password = params[:password1]
+    @password = params[:password1]
 
     # else create user
     safe_params = {
-      :name => params[:name],
-      :email => params[:email],
-      :password => password,
+      :name => @name,
+      :email => @email,
+      :password => @password
     }
 
     # create user
@@ -33,26 +29,29 @@ class Api::UserController < Api::BaseController
     if (@user.save)
       render json: { :token => @user.current_token }
     else
-      render json: { 
+      render json: {
         :error => 'Unable to create user.',
       }, status: 500
       return
     end
-
   end
 
   # using a name/password combination
   # to get a fresh token
   def signin
     # lookup user by name or email
-    # if there is no user send error 
-    name_or_email = params[:name]
-    password = params[:password]
+    # if there is no user send error
+    @name_or_email = params[:name]
+    @password = params[:password]
 
-    @user = User.signin(name_or_email, password)
+      logger = Logger.new(STDOUT)
+      logger.info "get user"
 
+    @user = User.signin(@name_or_email, @password)
+
+      logger.info "user is empty"
     if (!@user)
-      render json: { 
+      render json: {
         :error => 'Failed to sign in.',
       }, status: 500
       return

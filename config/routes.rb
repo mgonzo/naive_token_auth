@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'default#index'
 
-  
+
   # The api routes
   namespace :api, defaults: { format: :json } do
     scope :v1 do
@@ -15,6 +15,10 @@ Rails.application.routes.draw do
         get '/' => 'user#index'
         post '/' => 'user#create'
         post '/signin' => 'user#signin'
+      end
+
+      scope :test do
+        get '/' => 'test#test'
       end
 
     end
