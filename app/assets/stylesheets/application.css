@@ -13,3 +13,23 @@
  *= require_tree .
  *= require_self
  */
+
+label {
+  font: .5em;
+}
+
+#info {
+  background-color: #ededed;
+  height: 200px;
+}
+
+#settings {
+  background-color: #999;
+  height: 200px;
+}
+
+#reactty {
+  width: 100%;
+  height: 200px;
+  background-color: black;
+}

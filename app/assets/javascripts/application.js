@@ -15,3 +15,4 @@
 //= require turbolinks
 //= require_tree .
 //= index.js
+//= build.js

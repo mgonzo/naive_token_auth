@@ -1,23 +1,55 @@
-<section id="auth">
-  <div class="create-user" style="width: 400px; display: inline-block">
-    <h3>name</h3>
-    <input class="name" type="text">
-    <h3>email</h3>
-    <input class="email" type="email">
-    <h3>password</h3>
-    <input id="password1" class="password" type="password">
-    <h3>password confirm</h3>
-    <input id="password2" class="password" type="password">
-    <button id="create-user-action">Post Create</button>
-  </div>
-  <div class="signin-user" style="width: 400px; display: inline-block">
-    <h3>name or email</h3>
-    <input class="name" type="text">
-    <h3>password</h3>
-    <input id="signin-pass" class="password" type="password">
-    <button id="signin-user-action">Post Signin</button>
+<section class="row">
+  <div class="container">
+    <section class="column two" id="info">
+    </section>
+    <section class="column two" id="settings">
+    </section>
   </div>
 </section>
-<section id="index" style="margin-top: 5em;">
-  <button id="gettest">Get Test</button>
+
+<section class="row">
+  <div class="container">
+    <section class="column three create-user">
+      <div>
+        <label>name</label>
+        <input class="name" type="text">
+      </div>
+
+      <div>
+        <label>email</label>
+        <input class="email" type="email">
+      </div>
+
+      <div>
+        <label>password</label>
+        <input id="password1" class="password" type="password">
+      </div>
+
+      <div>
+        <label>password</label>
+        <input id="password2" class="password" type="password">
+      </div>
+
+      <button id="create-user-action">Post Create</button>
+    </section>
+
+    <section class="column three signin-user">
+      <label>name or email</label>
+      <input class="name" type="text">
+      <label>password</label>
+      <input id="signin-pass" class="password" type="password">
+      <button id="signin-user-action">Post Signin</button>
+    </section>
+
+    <section class="column three signin-user">
+      <button id="gettest">Get Resource</button>
+    </section>
+  </div>
+</section>
+
+<section class="row">
+  <div class="container">
+    <section class="column one" id="reactty">
+    </section>
+  </div>
 </section>
