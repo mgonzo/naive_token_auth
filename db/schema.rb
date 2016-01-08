@@ -14,12 +14,13 @@
 ActiveRecord::Schema.define(version: 20150609034200) do
 
   create_table "users", force: true do |t|
-    t.string   "user_id",                         null: false
-    t.string   "password",                        null: false
-    t.string   "current_token",      default: "", null: false
-    t.string   "last_token",         default: "", null: false
-    t.string   "name",               default: "", null: false
-    t.string   "email",              default: "", null: false
+    t.string   "user_id",                            null: false
+    t.string   "password",                           null: false
+    t.string   "current_token",         default: "", null: false
+    t.string   "last_token",            default: ""
+    t.string   "name",                  default: "", null: false
+    t.string   "email",                 default: "", null: false
+    t.datetime "current_token_expires"
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.datetime "created_at"

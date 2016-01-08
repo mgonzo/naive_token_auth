@@ -21,13 +21,17 @@ class User < ActiveRecord::Base
   def self.signin (name_or_email, password)
     # find a user by name or by email
     # to match up with the password
+    logger = Logger.new(STDOUT)
     @user = self.find_by name: name_or_email
+      logger.info name_or_email
+      logger.info @user
 
-    if (!@user) 
+    if (!@user)
       @user = self.find_by email: name_or_email
     end
 
-    if (!@user) 
+
+    if (!@user)
       return nil
     end
 
