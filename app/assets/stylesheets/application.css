@@ -14,6 +14,10 @@
  *= require_self
  */
 
+body {
+  font-family: "Deja Vu Sans", sans-serif;
+}
+
 label {
   font: .5em;
 }
@@ -21,6 +25,8 @@ label {
 #info {
   background-color: #ededed;
   height: 200px;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 #settings {
@@ -28,8 +34,24 @@ label {
   height: 200px;
 }
 
-#reactty {
+#shelly {
   width: 100%;
   height: 200px;
   background-color: black;
 }
+
+.create-user input[type="text"],
+.create-user input[type="email"],
+.create-user input[type="password"],
+.create-user label,
+.login-user input[type="text"],
+.login-user input[type="email"],
+.login-user input[type="password"],
+.login-user label {
+  margin-bottom: 10px;
+}
+.create-user button {
+  margin: 15px 0;
+  display: block;
+}
+

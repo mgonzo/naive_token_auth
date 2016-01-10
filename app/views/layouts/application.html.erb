@@ -12,5 +12,10 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react-dom.js"></script>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
+  <script>
+    var cmd = {};
+    ReactDOM.render(React.createElement(Shelly, {commands: cmd}), document.getElementById('shelly'));
+  </script>
 </body>
 </html>

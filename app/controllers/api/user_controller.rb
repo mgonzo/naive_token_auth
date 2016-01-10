@@ -27,7 +27,10 @@ class Api::UserController < Api::BaseController
     # save user
     # create response
     if (@user.save)
-      render json: { :token => @user.current_token }
+      render json: {
+        :user => @user.name,
+        :token => @user.current_token
+      }
     else
       render json: {
         :error => 'Unable to create user.',
@@ -63,7 +66,7 @@ class Api::UserController < Api::BaseController
     # or return @user.token
     # which can return the json token
     render json: {
-      :user => @user,
+      :user => @user.name,
       :token => @user.current_token
     }
 
