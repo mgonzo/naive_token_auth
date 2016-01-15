@@ -2,6 +2,8 @@
 
 one:
   user_id: MyString
+  password: pass1
 
 two:
   user_id: MyString
+  password: pass2
